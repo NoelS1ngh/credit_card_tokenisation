@@ -4,6 +4,8 @@ from cryptography.hazmat.backends import default_backend
 from logger_config import setup_logger
 import warnings
 from tqdm import tqdm
+import os
+import base64
 
 tqdm.pandas()
 warnings.filterwarnings('ignore')

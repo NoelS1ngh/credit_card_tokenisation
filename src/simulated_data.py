@@ -1,7 +1,7 @@
 import pandas as pd
 import random
 from datetime import datetime, timedelta
-from logger_config import setup_logger
+from credit_card_tokenisation.src.logger_config import setup_logger
 import warnings
 from tqdm import tqdm
 

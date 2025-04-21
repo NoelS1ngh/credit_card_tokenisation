@@ -22,3 +22,15 @@ a given range.
     > logger_config.py creation to reuse across modules.
     > separate fpe and aes modules
     > update to main function
+--------------------------------------------------------------------------------------------------------------------
+logger_config.py
+    > logging configuration that is imported and used by subsequent scripts.
+
+simulated_data.py
+    > simulates credit card numbers, expiration dates and policy numbers for the sample size of values the user defines.
+
+fpe_encryption.py
+    > Encryption algorithm used with the fpe_key to encrypt the credit card numbers preserving the length expected.
+
+aes_encryption.py
+
