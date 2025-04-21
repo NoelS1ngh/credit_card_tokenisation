@@ -34,64 +34,18 @@ from cryptography.hazmat.backends import default_backend
 import os
 import base64
 import pyffx
+import simulated_data
+from logger_config import setup_logger
+from tqdm import tqdm
+import warnings
+
+tqdm.pandas()
+warnings.filterwarnings('ignore')
+logger = setup_logger(__name__)
 
 #FPE Encryption Key
 fpe_key = b'mysecretkey12345'
 
-def logger_function():
-    """Function that is used to capture the configuration for the logger."""
-    logging_level = logging.DEBUG
-    log_colors = {'INFO': 'bold_blue',
-                  'DEBUG': 'cyan',
-                  'WARNING': 'yellow',
-                  'ERROR': 'red',
-                  'CRITICAL': 'bold_red',}
-    formatter = colorlog.ColoredFormatter('%(log_color)s[%(levelname)s]: %(message)s', log_colors=log_colors)
-    handler = logging.StreamHandler()
-    handler.setFormatter(formatter)
-    logger = colorlog.getLogger('bot_logger')
-    logger.setLevel(logging_level)
-    logger.addHandler(handler)
-    return logger
-
-def create_data_to_be_tokenised():
-    """ The module is used to generate dummy data for use in the tokenisation program demonstration.
-        It generates: policy id's, credit card numbers and expiration dates, and converts the information from a
-        dictionary to a dataframe which is then used for processing.
-    """
-    logger.info(f'******** : Create Sample Data : ********')
-    sample = 18000
-    records = generate_bulk(sample)
-    cc_numbers_to_tokenise = pd.DataFrame(records)
-    logger.debug(f'Total Records Generated: {len(cc_numbers_to_tokenise)}')
-    logger.debug(cc_numbers_to_tokenise.head(10))
-    return cc_numbers_to_tokenise
-
-def generate_policy_id():
-    """Generate a random 9-digit policy ID."""
-    return ''.join(random.choices('0123456789', k=9))
-
-def generate_credit_card_number():
-    """Generate a random credit card number (14–16 digits)."""
-    length = random.choice([14, 15, 16])
-    return ''.join(random.choices('0123456789', k=length))
-
-def generate_expiration_date():
-    """Generate a future expiration date in MM/YY format (within 5 years)."""
-    today = datetime.today()
-    future_date = today + timedelta(days=random.randint(365, 5 * 365))
-    return future_date.strftime("%m/%y")
-
-def generate_bulk(count=1000):
-    """Generate a list of dictionaries with policy ID, credit card number, and expiration date."""
-    return [
-        {
-            'policy_id': generate_policy_id(),
-            'credit_card_number': generate_credit_card_number(),
-            'expiration_date': generate_expiration_date()
-        }
-        for _ in range(count)
-    ]
 
 def data_exploration(cc_numbers_to_tokenise):
     logger.info(f'******** : Checking Data to Tokenise : ********')
@@ -243,16 +197,23 @@ def format_preserving_encryption_tokenisation(cc_numbers_to_tokenise: pd.DataFra
     logger.debug(cc_numbers_to_tokenise[['credit_card_number','clean_credit_card_number','fpe_token']].head(10))
     return cc_numbers_to_tokenise
 
-
-def run_program():
-    cc_numbers_to_tokenise = create_data_to_be_tokenised()
-    status = data_exploration(cc_numbers_to_tokenise)
-    cc_numbers_to_tokenise = clean_data_before_tokenisation(cc_numbers_to_tokenise)
-    cc_numbers_to_tokenise = aes_cc_tokenisation(cc_numbers_to_tokenise)
-    cc_numbers_to_tokenise = format_preserving_encryption_tokenisation(cc_numbers_to_tokenise, fpe_key)
-
 if __name__ == '__main__':
-    logger = logger_function()
-    run_program()
+    run_type = 'SIM' #options: SIM
+    encryption_method = 'FPE' #FPE, AES
+    sample_size = 18000
+
+    if run_type == 'SIM' and encryption_method == 'FPE':
+        cc_numbers_to_tokenise = simulated_data.create_data_to_be_tokenised(sample_size=sample_size)
+        cc_numbers_to_tokenise = clean_data_before_tokenisation(cc_numbers_to_tokenise)
+        cc_numbers_to_tokenise = format_preserving_encryption_tokenisation(cc_numbers_to_tokenise, fpe_key)
+    elif run_type == 'SIM' and encryption_method == 'AES':
+        cc_numbers_to_tokenise = simulated_data.create_data_to_be_tokenised(sample_size=sample_size)
+        cc_numbers_to_tokenise = clean_data_before_tokenisation(cc_numbers_to_tokenise)
+        cc_numbers_to_tokenise = aes_cc_tokenisation(cc_numbers_to_tokenise)
+    else:
+        logger.error(f'Incorrect Selection ')
+
+
+
 
 
