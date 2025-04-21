@@ -133,7 +133,7 @@ if __name__ == '__main__':
     if run_type == 'SIM' and encryption_method == 'FPE':
         cc_numbers_to_tokenise = simulated_data.create_data_to_be_tokenised(sample_size=sample_size)
         cc_numbers_to_tokenise = clean_data_before_tokenisation(cc_numbers_to_tokenise)
-        cc_num_tokenised = fpe_encryption.format_preserving_encryption_tokenisation(cc_numbers_to_tokenise)
+        cc_num_tokenised = fpe_encryption.format_preserving_encryption_tokenisation(cc_numbers_to_tokenise, fpe_key)
     elif run_type == 'SIM' and encryption_method == 'AES':
         cc_numbers_to_tokenise = simulated_data.create_data_to_be_tokenised(sample_size=sample_size)
         cc_numbers_to_tokenise = clean_data_before_tokenisation(cc_numbers_to_tokenise)
