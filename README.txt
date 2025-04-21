@@ -14,3 +14,11 @@ a given range.
     > Checks performed on data including:
         - special characters in data
         - data lengths and consistency
+--------------------------------------------------------------------------------------------------------------------
+@version: 2.0
+@date: 21st April 2025
+@includes:
+    > separate module for creation of test data to use for tokenisation
+    > logger_config.py creation to reuse across modules.
+    > separate fpe and aes modules
+    > update to main function
